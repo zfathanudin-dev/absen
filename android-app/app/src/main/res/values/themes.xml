@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.AbsensiKebun" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/ink</item>
+        <item name="colorPrimaryDark">@color/ink</item>
+        <item name="colorAccent">@color/amber</item>
+        <item name="android:windowBackground">@color/paper</item>
+    </style>
+</resources>

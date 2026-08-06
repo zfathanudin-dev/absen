@@ -1,0 +1,11 @@
+<resources>
+    <color name="ink">#0D0D0B</color>
+    <color name="paper">#F7F6F0</color>
+    <color name="paper_dim">#ECEAE0</color>
+    <color name="gray">#6E6E67</color>
+    <color name="gray_soft">#B9B7AC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="amber">#E8A23A</color>
+    <color name="clay">#C1502E</color>
+    <color name="leaf">#4C7A54</color>
+</resources>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KEBUN·LOG — Dashboard Absensi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== BACKGROUND ANIMASI ===== -->
+  <div class="bg-scene" aria-hidden="true">
+    <div class="gradient-blob gb1"></div>
+    <div class="gradient-blob gb2"></div>
+    <div class="gradient-blob gb3"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+  <!-- ===== LAYAR LOGIN ===== -->
+  <div id="layarLogin" class="login-wrap">
+    <form id="formLogin" class="login-card">
+      <div class="mark">KEBUN·LOG</div>
+      <div class="sub">Sistem Absensi Lapangan — Admin</div>
+      <input type="text" id="loginUsername" placeholder="Username" required autocomplete="username">
+      <input type="password" id="loginPassword" placeholder="Password" required autocomplete="current-password">
+      <button type="submit">Masuk</button>
+      <div id="loginError" class="login-error"></div>
+    </form>
+  </div>
+
+  <!-- ===== APLIKASI UTAMA ===== -->
+  <div class="shell" id="appShell" style="display:none;">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div>
+          <div class="mark">KEBUN·LOG</div>
+          <div class="sub">Sistem Absensi Lapangan</div>
+        </div>
+        <button class="close-drawer" onclick="closeDrawer()">✕</button>
+      </div>
+      <nav class="nav">
+        <a href="#" class="active" data-tab="absensi"><span class="ic">01</span> Absensi Harian</a>
+        <a href="#" data-tab="lastseen"><span class="ic">02</span> Last Seen</a>
+        <a href="#" data-tab="review"><span class="ic">03</span> Perlu Review</a>
+        <a href="#" data-tab="pekerja"><span class="ic">04</span> Data Pekerja</a>
+        <a href="#" data-tab="area"><span class="ic">05</span> Area &amp; Geofence</a>
+      </nav>
+      <div class="sidebar-foot" id="adminFoot">Sesi admin · <span id="namaAdmin"></span><br>
+        <a href="#" onclick="logout(); return false;" style="color:inherit;">Keluar</a>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" onclick="openDrawer()">☰</button>
+          <div>
+            <h1 id="judulHalaman">Absensi Harian</h1>
+            <div class="today" id="tanggalHariIni"></div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="live-clock" id="liveClock">--:--:--</div>
+          <div class="admin-chip">👤 <span id="namaAdminChip"></span></div>
+        </div>
+      </div>
+
+      <!-- TAB: ABSENSI HARIAN -->
+      <section id="tabAbsensi" class="tab-content active">
+        <div class="stats" id="statsBox">
+          <div class="stat stat-hadir"><div class="stat-ico">✓</div><div class="lbl">Hadir</div><div class="num" id="statHadir">- <small>/-</small></div></div>
+          <div class="stat stat-belum"><div class="stat-ico">🕐</div><div class="lbl">Belum Absen</div><div class="num" id="statBelum">-</div></div>
+          <div class="stat stat-review flag"><div class="stat-ico">!</div><div class="lbl">Review</div><div class="num" id="statReview">-</div></div>
+          <div class="stat stat-rata"><div class="stat-ico">⌚</div><div class="lbl">Rata Jam Masuk</div><div class="num" id="statRata" style="font-size:17px;">-</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>RIWAYAT ABSEN</h2><button class="btn-mini" onclick="muatAbsensi()">↻ Refresh</button></div>
+          <table>
+            <thead><tr><th>Pekerja</th><th>Jam</th><th>Tower</th><th>Status</th></tr></thead>
+            <tbody id="tbodyAbsensi"><tr><td colspan="4" class="empty skeleton-row"><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div><div class="skeleton-cell"></div></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: LAST SEEN -->
+      <section id="tabLastseen" class="tab-content">
+        <div class="panel">
+          <div class="panel-head"><h2>TERAKHIR TERLIHAT (APP DIBUKA)</h2><button class="btn-mini" onclick="muatLastSeen()">↻ Refresh</button></div>
+          <table>
+            <thead><tr><th>Pekerja</th><th>Waktu</th><th>Tower</th><th>IP</th></tr></thead>
+            <tbody id="tbodyLastseen"><tr><td colspan="4" class="empty">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: PERLU REVIEW -->
+      <section id="tabReview" class="tab-content">
+        <div class="panel">
+          <div class="panel-head"><h2>PERLU REVIEW</h2><button class="btn-mini" onclick="muatReview()">↻ Refresh</button></div>
+          <div id="listReview"><div class="empty" style="padding:14px;">Memuat...</div></div>
+        </div>
+      </section>
+
+      <!-- TAB: DATA PEKERJA -->
+      <section id="tabPekerja" class="tab-content">
+        <div class="panel">
+          <div class="panel-head"><h2>TAMBAH PEKERJA</h2></div>
+          <form id="formPekerja" class="form-inline">
+            <input type="text" id="pkKode" placeholder="Kode (mis. KB-0142)" required>
+            <input type="text" id="pkNama" placeholder="Nama pekerja" required>
+            <input type="password" id="pkPin" placeholder="PIN awal" required>
+            <button type="submit">Tambah</button>
+          </form>
+        </div>
+        <div class="panel" style="margin-top:12px;">
+          <div class="panel-head"><h2>DAFTAR PEKERJA</h2><button class="btn-mini" onclick="muatPekerja()">↻ Refresh</button></div>
+          <table>
+            <thead><tr><th>Kode</th><th>Nama</th><th>Status</th><th></th></tr></thead>
+            <tbody id="tbodyPekerja"><tr><td colspan="4" class="empty">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB: AREA & GEOFENCE -->
+      <section id="tabArea" class="tab-content">
+        <div class="panel">
+          <div class="panel-head"><h2>TAMBAH AREA KERJA</h2></div>
+          <form id="formArea" class="form-inline">
+            <input type="text" id="arNama" placeholder="Nama area (mis. Blok A)" required>
+            <input type="text" id="arLat" placeholder="Latitude" required>
+            <input type="text" id="arLng" placeholder="Longitude" required>
+            <input type="number" id="arRadius" placeholder="Radius (m)" value="300" required>
+            <button type="submit">Tambah</button>
+          </form>
+          <p class="hint">Tip: buka lokasi di Google Maps, klik-kanan titik → koordinat otomatis ter-copy.</p>
+        </div>
+        <div class="panel" style="margin-top:12px;">
+          <div class="panel-head"><h2>DAFTAR AREA</h2><button class="btn-mini" onclick="muatArea()">↻ Refresh</button></div>
+          <table>
+            <thead><tr><th>Nama</th><th>Koordinat</th><th>Radius</th><th></th></tr></thead>
+            <tbody id="tbodyArea"><tr><td colspan="4" class="empty">Memuat...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

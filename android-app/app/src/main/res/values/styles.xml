@@ -1,0 +1,55 @@
+<resources>
+
+    <style name="DetailItemBox">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/bg_detail_item</item>
+        <item name="android:paddingHorizontal">11dp</item>
+        <item name="android:paddingVertical">9dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="DetailItemLabel">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:letterSpacing">0.06</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="DetailItemValue">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ProfileRow">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ProfileRowKey">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ProfileRowValue">
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12.5sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+</resources>
